@@ -33,6 +33,14 @@ files_to_flash = [
     "tzsw.img.lz4"
 ]
 
+OKAY = '\033[92m'
+WARNING = '\033[93m'
+FAIL = '\033[91m'
+BLUE = '\033[94m'
+CYAN = '\033[96m'
+PURPLE = '\033[35m'
+ENDC = '\033[0m'
+
 def write_u32(value):
     return struct.pack('<I', value)
 
@@ -56,12 +64,12 @@ def load_file(file_input):
 
         return block
     except Exception as e:
-        print(f"Error loading file: {e}")
+        print(f"{FAIL}Error loading file: {e}{ENDC}")
         return None
 
 def calculate_checksum(data):
     checksum = sum(data[8:-2]) & 0xFFFF
-    print(f"=> Data checksum {checksum:04X}")
+    print(f"{BLUE}=> Data checksum{ENDC} {OKAY}{checksum:04X}{ENDC}")
     data[-2:] = struct.pack('<H', checksum)
 
 def find_device():
@@ -75,7 +83,7 @@ def find_device():
                 device_connection_attempts = 0
 
                 print()
-                print("Tip: Plug in your device with the power button pressed.")
+                print(f"{CYAN}Tip: Plug in your device with the power button pressed.{ENDC}")
 
             print(".", end="", flush=True)
             device_connection_attempts += 1
@@ -87,22 +95,22 @@ def find_device():
 def send_part_to_device(device, file, filename):
     file_size = len(file)
 
-    print(f"=> Downloading {file_size} bytes to 0x{download_address:08X}")
+    print(f"{BLUE}=> Downloading{ENDC} {OKAY}{file_size}{ENDC} {BLUE}bytes to{ENDC} {OKAY}0x{download_address:08X}{ENDC}")
 
     write_header(file, download_address, file_size)
     calculate_checksum(file)
 
     ret = device.write(2, file, timeout=50000)
-    print(f"=> {ret} bytes written.")
+    print(f"{OKAY}=> {ret} bytes written.{ENDC}")
     print()
 
     if ret != file_size:
-        print(f"Failed to write {file_size} bytes")
+        print(f"{FAIL}Failed to write {file_size} bytes{ENDC}")
         sys.exit(-1)
 
 def filter_tar(tarinfo, unused):
     if tarinfo.name in files_to_extract_tar:
-        print(f"Extracted: {tarinfo.name}")
+        print(f"{OKAY}Extracted: {tarinfo.name}{ENDC}")
         return tarinfo
     return None
 
@@ -111,7 +119,7 @@ def extract_bl_tar(path):
         try:
             tar.extractall(path='.', members=tar.getmembers(), filter=filter_tar)
         except:
-            print("Failure in extracting BL tar! Bailing!")
+            print(f"{FAIL}Failure in extracting BL tar! Bailing!{ENDC}")
             sys.exit(-1)
 
     tar.close()
@@ -126,9 +134,9 @@ def extract_bl_tar(path):
 
                     output_bin.close()
 
-                print(f"Extracted: {filename_no_lz4}")
+                print(f"{OKAY}Extracted: {filename_no_lz4}{ENDC}")
             except:
-                print("Failure in extracting LZ4 archives! Bailing!")
+                print(f"{FAIL}Failure in extracting LZ4 archives! Bailing!{ENDC}")
                 sys.exit(-1)
 
         input_lz4.close()
@@ -136,14 +144,14 @@ def extract_bl_tar(path):
         try:
             delete_file(resultant_bin)
         except:
-            print("Failure in preliminary cleanup! Bailing!")
+            print(f"{FAIL}Failure in preliminary cleanup! Bailing!{ENDC}")
             sys.exit(-1)
 
     print()
 
 def delete_file(filename):
     os.remove(filename)
-    print(f"Deleted: {filename}")
+    print(f"{OKAY}Deleted: {filename}{ENDC}")
 
 def display_and_verify_device_info(device):
     device_config = device.get_active_configuration()
@@ -153,35 +161,35 @@ def display_and_verify_device_info(device):
     usb_booting_version = usb.util.get_string(device, device_config[(0, 0)].iInterface)
 
     print()
-    print("======== Device Information ========")
-    print(f"         SoC: {soc}")
-    print(f"         SoC ID: {usb_serial_num[0:15]}")
-    print(f"         Chip ID: {usb_serial_num[15:31]}")
-    print(f"         USB Booting Version: {usb_booting_version[12:16]}")
+    print(f"{PURPLE}======== Device Information ========")
+    print(f"         SoC:{ENDC} {OKAY}{soc}{ENDC}")
+    print(f"         {PURPLE}SoC ID:{ENDC} {OKAY}{usb_serial_num[0:15]}{ENDC}")
+    print(f"         {PURPLE}Chip ID:{ENDC} {OKAY}{usb_serial_num[15:31]}{ENDC}")
+    print(f"         {PURPLE}USB Booting Version:{ENDC} {OKAY}{usb_booting_version[12:16]}{ENDC}")
     print()
 
     if soc != "Exynos9830\0":
-        print("This isn't an exynos9830 device, backing out!")
+        print(f"{FAIL}This isn't an exynos9830 device, backing out!{ENDC}")
         sys.exit(-1)
 
 def main():
-    print(r"""
+    print(rf"""{PURPLE}
   _    _ _    _ ____  ____  _      ______
  | |  | | |  | |  _ \|  _ \| |    |  ____|
  | |__| | |  | | |_) | |_) | |    | |__
  |  __  | |  | |  _ <|  _ <| |    |  __|
  | |  | | |__| | |_) | |_) | |____| |____
  |_|  |_|\____/|____/|____/|______|______|
-""")
+{ENDC}""")
 
     print("USB Recovery Tool")
     print("Version 1.0 (c) 2025 Umer Uddin <umer.uddin@mentallysanemainliners.org>")
     print()
-    print("Notice: This program and it's source code is licensed under GPL 2.0.")
+    print(f"{WARNING}Notice: This program and it's source code is licensed under GPL 2.0.")
     print()
-    print("Notice: If you have paid for this, you have been scammed!")
-    print("Please issue a refund and get the official program from")
-    print("https://github.com/halal-beef/hubble-usb-recovery-tool")
+    print(f"Notice: If you have paid for this, you have been{ENDC} {FAIL}scammed{ENDC}!")
+    print(f"{WARNING}Please issue a refund and get the official program from{ENDC}")
+    print(f"{CYAN}https://github.com/halal-beef/hubble-usb-recovery-tool{ENDC}")
     print()
 
     parser = argparse.ArgumentParser(description="USB Recovery Tool for Exynos9830 based devices.")
@@ -191,21 +199,21 @@ def main():
 
     if args.bl_tar:
         if os.path.isfile(args.bl_tar):
-            print(f"Using file: {args.bl_tar}")
+            print(f"{BLUE}Using file: {args.bl_tar}{ENDC}")
         else:
-            print(f"Error: The file {args.bl_tar} does not exist or is not a valid file.")
+            print(f"{FAIL}Error: The file {args.bl_tar} does not exist or is not a valid file.{ENDC}")
 
-    print("Extracting files...")
+    print(f"{BLUE}Extracting files...{ENDC}")
     print()
     extract_bl_tar(args.bl_tar)
 
-    print("Waiting for device")
+    print(f"{BLUE}Waiting for device{ENDC}")
     device = find_device()
-    print("Found device.")
+    print(f"{OKAY}Found device.{ENDC}")
 
     display_and_verify_device_info(device)
 
-    print("Starting USB booting...")
+    print(f"{WARNING}Starting USB booting...{ENDC}")
     print()
 
     if device.is_kernel_driver_active(0):
@@ -215,29 +223,29 @@ def main():
     with open("sboot.bin", "rb") as sboot:
         for sboot_split in exynos9830_sboot_splits:
             try:
-                print(f"Sending file part {sboot_split[0]} (0x{sboot_split[1]:X} - 0x{sboot_split[2]:X})...")
+                print(f"{WARNING}Sending file part {sboot_split[0]} (0x{sboot_split[1]:X} - 0x{sboot_split[2]:X})...{ENDC}")
 
                 sboot.seek(sboot_split[1])
                 sboot_section = load_file(sboot.read(sboot_split[2] - sboot_split[1]))
 
                 if sboot_section is None:
-                    print(f"Failed to load {sboot_split[0]}")
+                    print(f"{FAIL}Failed to load {sboot_split[0]}{ENDC}")
                     sys.exit(-1)
 
                 send_part_to_device(device, sboot_section, sboot_split[0])
             except Exception as e:
-                print(f"Error when trying to process sboot.bin. ({e})")
+                print(f"{FAIL}Error when trying to process sboot.bin. ({e}){ENDC}")
                 sys.exit(-1)
 
         sboot.close()
 
     for download_file in files_to_flash:
-        print(f"Sending file {download_file}...")
+        print(f"{WARNING}Sending file {download_file}...{ENDC}")
 
         download_data = load_file(download_file)
 
         if download_data is None:
-            print(f"Failed to load {download_file}")
+            print(f"{FAIL}Failed to load {download_file}{ENDC}")
             sys.exit(-1)
 
         send_part_to_device(device, download_data, download_file)
@@ -245,7 +253,7 @@ def main():
     usb.util.release_interface(device, 0)
     usb.util.dispose_resources(device)
 
-    print("Cleaning up...")
+    print(f"{BLUE}Cleaning up...{ENDC}")
     print()
 
     try:
@@ -257,11 +265,11 @@ def main():
 
             delete_file(filename_no_lz4)
     except:
-        print("Failure in cleaning up! Bailing!")
+        print(f"{FAIL}Failure in cleaning up! Bailing!{ENDC}")
         sys.exit(-1)
 
     print()
-    print("You should be in download mode now, please reflash the stock firmware as the bootloader will still be wiped.")
+    print(f"{WARNING}You should be in download mode now, please reflash the stock firmware as the bootloader will still be wiped.{ENDC}")
 
 if __name__ == "__main__":
     main()
