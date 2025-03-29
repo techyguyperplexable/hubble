@@ -4,8 +4,27 @@
  - Why not?
  - I don't want people to be paying to unbrick their devices
 
+## Platform preperation
+
+### Linux
+
+- Open or create ```/etc/udev/rules.d/51-android.rules``` as **root**
+- Add the following lines to the file
+```
+# Samsung Exynos USB Boot Mode
+SUBSYSTEM=="usb", ATTR{idVendor}=="04e8", ATTR{idProduct}=="1234", MODE="0660", GROUP="dialout"
+```
+- Save the file and exit your editor
+- Run ```sudo udevadm control --reload && sudo udevadm trigger``` to reload UDEV rules
+- You can now run the tool.
+
+### Windows
+
+- Uninstall any existing BootROM Drivers
+- Install the ones provided by right clicking the inf and pressing install
+- You can now run the tool.
+
 ## How do I use it?
- - Setup UDEV Rules (I don't have a guide for this, yet, if you dont know how, just run the tool with sudo)
  - Install required python packages via ```pip3 install -r requirements.txt```
  - Run the tool, pointing to your bootloader tar file via ```python3 hubble.py -b <PATH_TO_BL_TAR>```
  - Plug in your bricked phone
