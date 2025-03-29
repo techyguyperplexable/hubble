@@ -1,5 +1,6 @@
 import usb.core
 import usb.util
+from colorama import just_fix_windows_console
 import tarfile
 import lz4.frame
 import argparse
@@ -73,10 +74,17 @@ def calculate_checksum(data):
     data[-2:] = struct.pack('<H', checksum)
 
 def find_device():
+    usb_backend = None
     device_connection_attempts = 0
 
+    if os.name == "nt":
+        import usb.backend.libusb1
+        import libusb
+
+        usb_backend = usb.backend.libusb1.get_backend(find_library=lambda x: libusb.dll._name)
+
     while True:
-        device = usb.core.find(idVendor=0x04e8, idProduct=0x1234)
+        device = usb.core.find(idVendor=0x04e8, idProduct=0x1234, backend=usb_backend)
 
         if device is None:
             if device_connection_attempts == 15:
@@ -173,6 +181,8 @@ def display_and_verify_device_info(device):
         sys.exit(-1)
 
 def main():
+    just_fix_windows_console()
+
     print(rf"""{PURPLE}
   _    _ _    _ ____  ____  _      ______
  | |  | | |  | |  _ \|  _ \| |    |  ____|
@@ -216,8 +226,10 @@ def main():
     print(f"{WARNING}Starting USB booting...{ENDC}")
     print()
 
-    if device.is_kernel_driver_active(0):
-        device.detach_kernel_driver(0)
+    if os.name !="nt":
+        if device.is_kernel_driver_active(0):
+            device.detach_kernel_driver(0)
+
     usb.util.claim_interface(device, 0)
 
     with open("sboot.bin", "rb") as sboot:

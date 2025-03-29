@@ -1,2 +1,5 @@
-pyusb
+colorama
+libusb
 lz4
+pygments
+pyusb
