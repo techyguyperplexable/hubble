@@ -12,28 +12,61 @@ import os
 from time import sleep
 
 download_address = 0xFFFFFFFE
+number_of_socs   = 2
+soc              = ""
 
-exynos9830_sboot_splits = [
-    ["fwbl1.img", 0x0, 0x3000],
-    ["epbl.img", 0x3000, 0x16000],
-    ["bl2.img", 0x16000, 0x82000],
-    ["lk.bin", 0xDB000, 0x35B000],
-    ["el3_mon.img", 0x35B000, 0x39B000]
-]
+exynos_data = [
+    [
+        # SoC Name
+        "Exynos9830\0",
 
-files_to_extract_tar = [
-    "sboot.bin.lz4",
-    "ldfw.img.lz4",
-    "tzsw.img.lz4"
-]
+        [ # S-Boot Split Values
+            ["fwbl1.img", 0x0, 0x3000],
+            ["epbl.img", 0x3000, 0x16000],
+            ["bl2.img", 0x16000, 0x82000],
+            ["lk.bin", 0xDB000, 0x35B000],
+            ["el3_mon.img", 0x35B000, 0x39B000]
+        ],
 
-files_to_extract_lz4 = [
-    "sboot.bin.lz4"
-]
+        [ # Files to Extract (TAR)
+            "sboot.bin.lz4",
+            "ldfw.img.lz4",
+            "tzsw.img.lz4"
+        ],
 
-files_to_flash = [
-    "ldfw.img.lz4",
-    "tzsw.img.lz4"
+        [ # Files to Extract (LZ4)
+            "sboot.bin.lz4"
+        ],
+
+        [ # Files to Flash
+            "ldfw.img.lz4",
+            "tzsw.img.lz4"
+        ]
+    ],
+
+    [
+        # SoC Name
+        "Exynos9820\0",
+
+        [ # S-Boot Split Values
+            ["epbl.img", 0x0, 0x3000],
+            ["fwbl1.img", 0x3000, 0x16000],
+            ["bl2.img", 0x16000, 0x68000],
+            ["sboot.bin", 0xA4000, 0x224000],
+            ["el3_mon.img", 0x224000, 0x264000]
+        ],
+
+        [ # Files to Extract (TAR)
+            "sboot.bin.lz4"
+        ],
+
+        [ # Files to Extract (LZ4)
+            "sboot.bin.lz4"
+        ],
+
+        [ # Files to Flash
+        ]
+    ]
 ]
 
 OKAY = '\033[92m'
@@ -116,9 +149,12 @@ def send_part_to_device(device, file, filename):
         sys.exit(-1)
 
 def filter_tar(tarinfo, unused):
-    if tarinfo.name in files_to_extract_tar:
-        print(f"{OKAY}Extracted: {tarinfo.name}{ENDC}")
-        return tarinfo
+    for soc_data in exynos_data:
+        if soc == soc_data[0]:
+            if tarinfo.name in soc_data[2]:
+                print(f"{OKAY}Extracted: {tarinfo.name}{ENDC}")
+                return tarinfo
+
     return None
 
 def extract_bl_tar(path):
@@ -131,28 +167,30 @@ def extract_bl_tar(path):
 
     tar.close()
 
-    for resultant_bin in files_to_extract_lz4:
-        with open(resultant_bin, 'rb') as input_lz4:
-            try:
-                filename_no_lz4 = os.path.splitext(resultant_bin)[0]
+    for soc_data in exynos_data:
+        if soc == soc_data[0]:
+            for resultant_bin in soc_data[3]:
+                with open(resultant_bin, 'rb') as input_lz4:
+                    try:
+                        filename_no_lz4 = os.path.splitext(resultant_bin)[0]
 
-                with open(filename_no_lz4, 'wb') as output_bin:
-                    output_bin.write(lz4.frame.decompress(input_lz4.read()))
+                        with open(filename_no_lz4, 'wb') as output_bin:
+                            output_bin.write(lz4.frame.decompress(input_lz4.read()))
 
-                    output_bin.close()
+                            output_bin.close()
 
-                print(f"{OKAY}Extracted: {filename_no_lz4}{ENDC}")
-            except:
-                print(f"{FAIL}Failure in extracting LZ4 archives! Bailing!{ENDC}")
-                sys.exit(-1)
+                        print(f"{OKAY}Extracted: {filename_no_lz4}{ENDC}")
+                    except:
+                        print(f"{FAIL}Failure in extracting LZ4 archives! Bailing!{ENDC}")
+                        sys.exit(-1)
 
-        input_lz4.close()
+                input_lz4.close()
 
-        try:
-            delete_file(resultant_bin)
-        except:
-            print(f"{FAIL}Failure in preliminary cleanup! Bailing!{ENDC}")
-            sys.exit(-1)
+                try:
+                    delete_file(resultant_bin)
+                except:
+                    print(f"{FAIL}Failure in preliminary cleanup! Bailing!{ENDC}")
+                    sys.exit(-1)
 
     print()
 
@@ -161,6 +199,8 @@ def delete_file(filename):
     print(f"{OKAY}Deleted: {filename}{ENDC}")
 
 def display_and_verify_device_info(device):
+    global soc
+
     device_config = device.get_active_configuration()
 
     soc = usb.util.get_string(device, device.iProduct)
@@ -175,9 +215,12 @@ def display_and_verify_device_info(device):
     print(f"         {PURPLE}USB Booting Version:{ENDC} {OKAY}{usb_booting_version[12:16]}{ENDC}")
     print()
 
-    if soc != "Exynos9830\0":
-        print(f"{FAIL}This isn't an exynos9830 device, backing out!{ENDC}")
-        sys.exit(-1)
+    for soc_data in exynos_data:
+        if soc == soc_data[0]:
+            return
+
+    print(f"{FAIL}This SoC is not Supported!{ENDC}")
+    sys.exit(-1)
 
 def main():
     just_fix_windows_console()
@@ -212,15 +255,15 @@ def main():
         else:
             print(f"{FAIL}Error: The file {args.bl_tar} does not exist or is not a valid file.{ENDC}")
 
-    print(f"{BLUE}Extracting files...{ENDC}")
-    print()
-    extract_bl_tar(args.bl_tar)
-
     print(f"{BLUE}Waiting for device{ENDC}")
     device = find_device()
     print(f"{OKAY}Found device.{ENDC}")
 
     display_and_verify_device_info(device)
+
+    print(f"{BLUE}Extracting files...{ENDC}")
+    print()
+    extract_bl_tar(args.bl_tar)
 
     print(f"{WARNING}Starting USB booting...{ENDC}")
     print()
@@ -232,34 +275,38 @@ def main():
     usb.util.claim_interface(device, 0)
 
     with open("sboot.bin", "rb") as sboot:
-        for sboot_split in exynos9830_sboot_splits:
-            try:
-                print(f"{WARNING}Sending file part {sboot_split[0]} (0x{sboot_split[1]:X} - 0x{sboot_split[2]:X})...{ENDC}")
+        for soc_data in exynos_data:
+            if soc == soc_data[0]:
+                for sboot_split in soc_data[1]:
+                    try:
+                        print(f"{WARNING}Sending file part {sboot_split[0]} (0x{sboot_split[1]:X} - 0x{sboot_split[2]:X})...{ENDC}")
 
-                sboot.seek(sboot_split[1])
-                sboot_section = load_file(sboot.read(sboot_split[2] - sboot_split[1]))
+                        sboot.seek(sboot_split[1])
+                        sboot_section = load_file(sboot.read(sboot_split[2] - sboot_split[1]))
 
-                if sboot_section is None:
-                    print(f"{FAIL}Failed to load {sboot_split[0]}{ENDC}")
+                        if sboot_section is None:
+                            print(f"{FAIL}Failed to load {sboot_split[0]}{ENDC}")
+                            sys.exit(-1)
+
+                        send_part_to_device(device, sboot_section, sboot_split[0])
+                    except Exception as e:
+                        print(f"{FAIL}Error when trying to process sboot.bin! ({e}){ENDC}")
+                        sys.exit(-1)
+
+                sboot.close()
+
+    for soc_data in exynos_data:
+        if soc == soc_data[0]:
+            for download_file in soc_data[4]:
+                print(f"{WARNING}Sending file {download_file}...{ENDC}")
+
+                download_data = load_file(download_file)
+
+                if download_data is None:
+                    print(f"{FAIL}Failed to load {download_file}{ENDC}")
                     sys.exit(-1)
 
-                send_part_to_device(device, sboot_section, sboot_split[0])
-            except Exception as e:
-                print(f"{FAIL}Error when trying to process sboot.bin. ({e}){ENDC}")
-                sys.exit(-1)
-
-        sboot.close()
-
-    for download_file in files_to_flash:
-        print(f"{WARNING}Sending file {download_file}...{ENDC}")
-
-        download_data = load_file(download_file)
-
-        if download_data is None:
-            print(f"{FAIL}Failed to load {download_file}{ENDC}")
-            sys.exit(-1)
-
-        send_part_to_device(device, download_data, download_file)
+                send_part_to_device(device, download_data, download_file)
 
     usb.util.release_interface(device, 0)
     usb.util.dispose_resources(device)
@@ -268,13 +315,15 @@ def main():
     print()
 
     try:
-        for resultant_lz4 in files_to_flash:
-            delete_file(resultant_lz4)
+        for soc_data in exynos_data:
+            if soc == soc_data[0]:
+                for resultant_lz4 in soc_data[4]:
+                    delete_file(resultant_lz4)
 
-        for resultant_bin in files_to_extract_lz4:
-            filename_no_lz4 = os.path.splitext(resultant_bin)[0]
+                for resultant_bin in soc_data[3]:
+                    filename_no_lz4 = os.path.splitext(resultant_bin)[0]
 
-            delete_file(filename_no_lz4)
+                    delete_file(filename_no_lz4)
     except:
         print(f"{FAIL}Failure in cleaning up! Bailing!{ENDC}")
         sys.exit(-1)
