@@ -1,5 +1,7 @@
 import usb.core
 import usb.util
+import usb.backend.libusb1
+import libusb
 from colorama import just_fix_windows_console
 import tarfile
 import lz4.frame
@@ -78,9 +80,6 @@ def find_device():
     device_connection_attempts = 0
 
     if os.name == "nt":
-        import usb.backend.libusb1
-        import libusb
-
         usb_backend = usb.backend.libusb1.get_backend(find_library=lambda x: libusb.dll._name)
 
     while True:
