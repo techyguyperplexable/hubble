@@ -21,6 +21,7 @@ SUBSYSTEM=="usb", ATTR{idVendor}=="04e8", ATTR{idProduct}=="1234", MODE="0660", 
 ### Windows
 
 - Uninstall any existing BootROM Drivers
+- Import the needed certificates by double clicking the ```## Driver Certificate (INSTALL ME FIRST BEFORE THE DRIVER).reg``` file and importing the regkeys
 - Install the ones provided by right clicking the inf and pressing install
 - You can now run the tool.
 
