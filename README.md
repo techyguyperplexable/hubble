@@ -34,13 +34,10 @@ SUBSYSTEM=="usb", ATTR{idVendor}=="04e8", ATTR{idProduct}=="1234", MODE="0660", 
 
 ## Supported devices
 
- > [!Warning]
- > This tool is strictly for devices based on Exynos9830!
-
  - [ ] Means your device is most likely supported but not tested
  - [x] Means your device is supported and tested
 
->
+Exynos 9830 Devices:
 
  - [x] Samsung Galaxy S20 (x1s/lte)
  - [x] Samsung Galaxy S20 Ultra (z3s/lte)
@@ -49,8 +46,16 @@ SUBSYSTEM=="usb", ATTR{idVendor}=="04e8", ATTR{idProduct}=="1234", MODE="0660", 
  - [ ] Samsung Galaxy Note20 (c1s/lte)
  - [ ] Samsung Galaxy Note20 Ultra (c2s/lte)
 
+Exynos 9820 Devices:
+
+ - [ ] Samsung Galaxy S10e (beyond0lte)
+ - [x] Samsung Galaxy S10 (beyond1lte)
+ - [ ] Samsung Galaxy S10+ (beyond2lte)
+ - [ ] Samsung Galaxy S10 5G (beyondx)
+
 ## Credits
  - [VDavid003](https://github.com/vdavid003) ```Helped me get the BL2 split on the bootloader```
  - [gaitenis](https://xdaforums.com/m/gaitenis.13049039) ```Finding lk.bin split```
  - [halal-beef](https://github.com/halal-beef) ```Initial idea, writing the tool and getting most of the splits```
  - [BotchedRPR](https://github.com/BotchedRPR) ```Loads of support and bricked his S20 Ultra for testing splits, absolute legend```
+ - [Robotix](https://github.com/Robotix22) ```Added Exynos 9820 Support, Tested splits on his Galaxy S10```
