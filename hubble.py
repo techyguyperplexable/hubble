@@ -208,11 +208,11 @@ def display_and_verify_device_info(device):
     usb_booting_version = usb.util.get_string(device, device_config[(0, 0)].iInterface)
 
     print()
-    print(f"{PURPLE}======== Device Information ========")
-    print(f"         SoC:{ENDC} {OKAY}{soc}{ENDC}")
-    print(f"         {PURPLE}SoC ID:{ENDC} {OKAY}{usb_serial_num[0:15]}{ENDC}")
-    print(f"         {PURPLE}Chip ID:{ENDC} {OKAY}{usb_serial_num[15:31]}{ENDC}")
-    print(f"         {PURPLE}USB Booting Version:{ENDC} {OKAY}{usb_booting_version[12:16]}{ENDC}")
+    print(f"{PURPLE}==================== Device Information ====================")
+    print(f"SoC:{ENDC} {OKAY}{soc}{ENDC}".center(60 + (len(ENDC) * 2) + len(OKAY)))
+    print(f"{PURPLE}SoC ID:{ENDC} {OKAY}{usb_serial_num[0:15]}{ENDC}".center(60 + len(PURPLE) + len(OKAY) + (len(ENDC) * 2)))
+    print(f"{PURPLE}Chip ID:{ENDC} {OKAY}{usb_serial_num[15:31]}{ENDC}".center(60 + len(PURPLE) + len(OKAY) + (len(ENDC) * 2)))
+    print(f"{PURPLE}USB Booting Version:{ENDC} {OKAY}{usb_booting_version[12:16]}{ENDC}".center(60 + len(PURPLE) + len(OKAY) + (len(ENDC) * 2)))
     print()
 
     for soc_data in exynos_data:
