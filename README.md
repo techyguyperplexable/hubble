@@ -1,4 +1,4 @@
-# Hubble - A USB Recovery Tool for devices based on Exynos9830
+# Hubble - A USB Recovery Tool for devices based on Exynos9830 or Exynos9820
 
 ## Why?
  - Why not?
