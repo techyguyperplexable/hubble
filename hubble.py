@@ -12,7 +12,6 @@ import os
 from time import sleep
 
 download_address = 0xFFFFFFFE
-number_of_socs   = 2
 soc              = ""
 
 exynos_data = [
