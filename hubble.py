@@ -240,7 +240,7 @@ def main():
     print()
     print(f"Notice: If you have paid for this, you have been{ENDC} {FAIL}scammed{ENDC}!")
     print(f"{WARNING}Please issue a refund and get the official program from{ENDC}")
-    print(f"{CYAN}https://github.com/halal-beef/hubble-usb-recovery-tool{ENDC}")
+    print(f"{CYAN}https://github.com/halal-beef/hubble{ENDC}")
     print()
 
     parser = argparse.ArgumentParser(description="USB Recovery Tool for Exynos9830 based devices.")
