@@ -253,6 +253,7 @@ def main():
             print(f"{BLUE}Using file: {args.bl_tar}{ENDC}")
         else:
             print(f"{FAIL}Error: The file {args.bl_tar} does not exist or is not a valid file.{ENDC}")
+            sys.exit(-1)
 
     print(f"{BLUE}Waiting for device{ENDC}")
     device = find_device()
