@@ -135,12 +135,14 @@ def send_part_to_device(device, file, filename):
     calculate_checksum(file)
 
     ret = device.write(2, file, timeout=50000)
-    logger.info(f"=> {ret} bytes written.")
-    print()
-
-    if ret != file_size:
+    if ret == file_size:
+        logger.info(f"=> {ret} bytes written.")
+    else:
+        logger.critical(f"=> {ret} bytes written.")
         logger.critical(f"Failed to write {file_size} bytes")
         sys.exit(-1)
+
+    print()
 
 def filter_tar(tarinfo, unused):
     for soc_data in exynos_data:
