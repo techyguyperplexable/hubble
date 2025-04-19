@@ -224,8 +224,8 @@ def main():
             'debug': {'color': 'magenta'},
             'info': {'color': 'green'},
             'warning': {'color': 'white', 'bold': True},
-            'error': {'color': 'red', 'bold': True},
-            'critical': {'color': 'magenta', 'bold': True},
+            'error': {'color': 'yellow', 'bold': True},
+            'critical': {'color': 'red', 'bold': True},
         },
         field_styles={
             'asctime': {'color': 'blue'},
@@ -245,7 +245,7 @@ def main():
     print("USB Recovery Tool")
     print("Version 1.0 (c) 2025 Umer Uddin <umer.uddin@mentallysanemainliners.org>")
     print()
-    logger.warning("Notice: This program and it's source code is licensed under GPL 2.0.")
+    logger.error("Notice: This program and it's source code is licensed under GPL 2.0.")
     logger.error("Notice: If you have paid for this, you have been scammed!")
     logger.error("Please issue a refund and get the official program from")
     logger.info("https://github.com/halal-beef/hubble")
