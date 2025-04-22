@@ -52,3 +52,4 @@ Exynos 9820 Devices:
  - [halal-beef](https://github.com/halal-beef) ```Initial idea, writing the tool and getting most of the splits```
  - [BotchedRPR](https://github.com/BotchedRPR) ```Loads of support and bricked his S20 Ultra for testing splits, absolute legend```
  - [Robotix](https://github.com/Robotix22) ```Added Exynos 9820 Support, Tested splits on his Galaxy S10```
+ - [alextrack2013](https://github.com/alextrack2013) ```Added udev setup script, fixed my spelling errors```
