@@ -338,7 +338,7 @@ def main():
         sys.exit(-1)
 
     print()
-    logger.info("You should be in download mode now, please reflash the stock firmware as the bootloader will still be wiped.")
+    logger.error("You should be in download mode now, please reflash the stock firmware as the bootloader will still be wiped.")
 
 if __name__ == "__main__":
     main()
