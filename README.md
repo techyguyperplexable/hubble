@@ -25,7 +25,7 @@
  - Let it run it's magic
  - Reflash the stock firmware
 
-## Tool demo
+## Recovery demo
 
 https://github.com/user-attachments/assets/78ca9dda-04c2-45d3-ad47-5a713086e33e
 
