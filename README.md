@@ -25,6 +25,10 @@
  - Let it run it's magic
  - Reflash the stock firmware
 
+## Tool demo
+
+https://github.com/user-attachments/assets/78ca9dda-04c2-45d3-ad47-5a713086e33e
+
 ## Supported devices
 
  - [ ] Means your device is most likely supported but not tested
