@@ -12,7 +12,6 @@ import coloredlogs
 import logging
 from time import sleep
 
-download_address = 0xFFFFFFFE
 soc              = ""
 
 logger           = logging.getLogger(__name__)
@@ -40,7 +39,7 @@ exynos_data = [
             "sboot.bin.lz4"
         ],
 
-        [ # Files to Flash
+        [ # Files to Send
             "ldfw.img.lz4",
             "tzsw.img.lz4"
         ]
@@ -66,7 +65,7 @@ exynos_data = [
             "sboot.bin.lz4"
         ],
 
-        [ # Files to Flash
+        [ # Files to Send
         ]
     ]
 ]
@@ -74,8 +73,7 @@ exynos_data = [
 def write_u32(value):
     return struct.pack('<I', value)
 
-def write_header(data, address, size):
-    data[:4] = write_u32(address)
+def write_header(data, size):
     data[4:8] = write_u32(size)
 
 def load_file(file_input):
@@ -129,9 +127,9 @@ def find_device():
 def send_part_to_device(device, file, filename):
     file_size = len(file)
 
-    logger.warning(f"=> Downloading {file_size} bytes to 0x{download_address:08X}")
+    logger.warning(f"=> Downloading {file_size} bytes")
 
-    write_header(file, download_address, file_size)
+    write_header(file, file_size)
     calculate_checksum(file)
 
     ret = device.write(2, file, timeout=50000)

@@ -1,4 +1,3 @@
-colorama
 coloredlogs
 libusb
 lz4
