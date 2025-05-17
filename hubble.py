@@ -68,6 +68,7 @@ exynos_data = [
         [ # Files to Send
         ]
     ],
+
     [
         # SoC Name
         "Exynos9611\0",
@@ -91,7 +92,7 @@ exynos_data = [
 
         [  # Files to Send
         ]
-    ],
+    ]
 ]
 
 def write_u32(value):
