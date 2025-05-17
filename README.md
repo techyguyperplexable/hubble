@@ -50,6 +50,15 @@ Exynos 9820 Devices:
  - [ ] Samsung Galaxy S10+ (beyond2lte)
  - [ ] Samsung Galaxy S10 5G (beyondx)
 
+Exynos 9611 Devices:
+
+ - [ ] Samsung Galaxy Tab s6 lite (gta4xl)
+ - [ ] Samsung Galaxy Tab S6 lite WiFi (Gta4xlwifi)
+ - [ ] Samsung Galaxy M31 (m31nsxx)
+ - [ ] Samsung Galaxy M21 
+ - [ ] Samsung Galaxy A51
+ - [ ] Samsung galaxy M31s
+ - [ ] Samsung Galaxy F41
 ## Credits
  - [VDavid003](https://github.com/vdavid003) ```Helped me get the BL2 split on the bootloader```
  - [gaitenis](https://xdaforums.com/m/gaitenis.13049039) ```Finding lk.bin split```
