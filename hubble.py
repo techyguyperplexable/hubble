@@ -68,7 +68,7 @@ exynos_data = [
         [ # Files to Send
         ]
     ]
-]
+],
 [
     # SoC Name
     "Exynos9611\0",
