@@ -69,6 +69,30 @@ exynos_data = [
         ]
     ]
 ]
+[
+    # SoC Name
+    "Exynos9611\0",
+
+    [  # S-Boot Split Values
+        ["part1.bin", 0x0000,  0x2000],
+        ["part2.bin", 0x2000,  0x15000],
+        ["part3.bin", 0x15000, 0x44000],
+        ["part4.bin", 0x5A000, 0x5A000 + 0x180000],  # 0x5A000 to 0x1DA000
+        ["part5.bin", 0x1DA000, 0x1DA000 + 0x40000], # 0x1DA000 to 0x21A000
+        ["part6.bin", 0x21A000, 0x31B000]
+    ],
+
+    [  # Files to Extract (TAR)
+        "sboot.bin.lz4",
+    ],
+
+    [  # Files to Extract (LZ4)
+        "sboot.bin.lz4"
+    ],
+
+    [  # Files to Send
+    ]
+],
 
 def write_u32(value):
     return struct.pack('<I', value)
