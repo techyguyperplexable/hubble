@@ -71,7 +71,7 @@ exynos_data = [
 
     [
         # SoC Name
-        "Exynos9611\0",
+        "Exynos9610\0",
 
         [  # S-Boot Split Values
             ["part1.bin", 0x0000,  0x2000],
