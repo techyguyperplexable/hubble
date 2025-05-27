@@ -161,6 +161,7 @@ def send_part_to_device(device, file, filename):
     ret = device.write(2, file, timeout=50000)
     if ret == file_size:
         logger.info(f"=> {ret} bytes written.")
+        sleep(1)
     else:
         logger.critical(f"=> {ret} bytes written.")
         logger.critical(f"Failed to write {file_size} bytes")
