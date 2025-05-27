@@ -79,7 +79,7 @@ exynos_data = [
             ["bl2.img", 0x15000, 0x44000],
             ["lk.bin", 0x5A000, 0x5A000 + 0x180000],  # 0x5A000 to 0x1DA000
             ["el3_mon.img", 0x1DA000, 0x1DA000 + 0x40000], # 0x1DA000 to 0x21A000
-            ["part6.bin", 0x21A000, 0x31B000]
+            ["sboot.bin", 0x21A000, 0x31B000]
         ],
 
         [  # Files to Extract (TAR)
