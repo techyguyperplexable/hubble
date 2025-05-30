@@ -66,3 +66,5 @@ Exynos 9611 Devices:
  - [BotchedRPR](https://github.com/BotchedRPR) ```Loads of support and bricked his S20 Ultra for testing splits, absolute legend```
  - [Robotix](https://github.com/Robotix22) ```Added Exynos 9820 Support, Tested splits on his Galaxy S10```
  - [alextrack2013](https://github.com/alextrack2013) ```Added udev setup script, fixed my spelling errors```
+ - [objecting_](https://github.com/techyguyperplexable) ```Added Exynos 9611 Support```
+- [cmdelite](https://github.com/cmdelite) ```Tested Exynos 9611 Splits```
