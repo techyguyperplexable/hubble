@@ -53,7 +53,7 @@ Exynos 9820 Devices:
 Exynos 9611 Devices:
 
  - [ ] Samsung Galaxy Tab s6 lite (gta4xl)
- - [ ] Samsung Galaxy Tab S6 lite WiFi (Gta4xlwifi)
+ - [x] Samsung Galaxy Tab S6 lite WiFi (Gta4xlwifi)
  - [ ] Samsung Galaxy M31 (m31nsxx)
  - [ ] Samsung Galaxy M21 
  - [ ] Samsung Galaxy A51
